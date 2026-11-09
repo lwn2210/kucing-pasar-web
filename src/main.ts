@@ -52,6 +52,7 @@ class App {
   private prevCat: Pose = { x: 0, y: 0 }
   private prevVendors: Pose[] = []
   private bannerUntil = 0
+  private lastFinish: { won: boolean; stars: number; levelName: string; fish: number; totalFish: number; alerts: number } | null = null
 
   constructor(canvas: HTMLCanvasElement) {
     this.renderer = new Renderer(canvas)
@@ -76,6 +77,7 @@ class App {
     $('restart').addEventListener('click', () => this.load(this.levelIndex, true))
     $('again').addEventListener('click', () => this.load(this.levelIndex, true))
     $('next').addEventListener('click', () => this.load(this.levelIndex + 1, true))
+    $('share-score').addEventListener('click', () => this.shareResult())
     $('quit').addEventListener('click', () => this.showMenu())
     $('to-menu').addEventListener('click', () => this.showMenu())
     const mute = $('mute')
@@ -258,6 +260,14 @@ class App {
       this.stars[id] = Math.max(this.stars[id] ?? 0, stars)
       saveStars(this.stars)
     }
+    this.lastFinish = {
+      won,
+      stars,
+      levelName: s.level.name,
+      fish: s.cat.fish.length,
+      totalFish: s.level.fish.length,
+      alerts: s.alerts,
+    }
     $('result-title').textContent = won ? 'Berhasil kabur!' : 'Ketangkep!'
     $('result-stars').innerHTML = won ? starRow(stars) : ''
     const items = won
@@ -270,6 +280,41 @@ class App {
     $('result-list').innerHTML = items.map(([text, ok]) => `<li class="${ok ? '' : 'off'}">${ok ? '★' : '☆'} ${text}</li>`).join('')
     $('next').hidden = !won || this.levelIndex >= LEVELS.length - 1
     setTimeout(() => this.showOnly('result'), won ? 500 : 900)
+  }
+
+  private shareResult(): void {
+    const f = this.lastFinish
+    if (!f) return
+    const starIcons = '⭐'.repeat(f.stars) + '☆'.repeat(3 - f.stars)
+    const status = f.won ? '🏆 BERHASIL KABUR!' : '😿 KETANGKEP PEDAGANG!'
+    const stealth = f.alerts === 0 ? 'Ninja Tanpa Suara (0 kali ketahuan) 🥷' : `Ketahuan pedagang ${f.alerts}x`
+    const text =
+      `🐟 LAPORAN OPERASI KUCING PASAR 🐟\n` +
+      `📍 Lokasi: ${f.levelName}\n` +
+      `Hasil: ${status}\n` +
+      `⭐ Rating Bintang: ${starIcons} (${f.stars}/3)\n` +
+      `🐟 Ikan Digondol: ${f.fish}/${f.totalFish}\n` +
+      `👀 Kewaspadaan: ${stealth}\n\n` +
+      `Bisa bantu si Oren nyolong ikan pasar tanpa ketahuan?\n` +
+      `👉 https://lwn2210.github.io/mini-arcade/kucing-pasar/`
+
+    const btn = $('share-score')
+    if (navigator.share) {
+      navigator.share({ title: 'Misi Kucing Pasar!', text, url: 'https://lwn2210.github.io/mini-arcade/kucing-pasar/' }).catch(() => {})
+    } else if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          const orig = btn.textContent
+          btn.textContent = '✅ Hasil disalin ke clipboard!'
+          setTimeout(() => (btn.textContent = orig), 2500)
+        })
+        .catch(() => {
+          window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank')
+        })
+    } else {
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank')
+    }
   }
 }
 
