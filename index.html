@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#f2c48a" />
+    <title>Kucing Pasar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene"></canvas>
+
+      <div id="hud" hidden>
+        <div class="chip stats">
+          <span id="lives" class="lives"></span>
+          <span class="fish-count">🐟 <b id="fish">0/0</b></span>
+        </div>
+        <div class="chip level-name" id="level-name"></div>
+        <div class="corner">
+          <button id="pause" class="round" aria-label="Jeda">⏸</button>
+        </div>
+        <div id="banner" class="banner"><b id="banner-main"></b><span id="banner-sub"></span></div>
+        <div class="hint" id="keys-hint">←/→ jalan · <kbd>Spasi</kbd> lompat · <kbd>↓</kbd> ngendap (di kolong meja = sembunyi) · ↓ + Spasi turun dari meja</div>
+        <div class="touch">
+          <div class="pad">
+            <button id="btn-left" aria-label="Kiri">◀</button>
+            <button id="btn-right" aria-label="Kanan">▶</button>
+          </div>
+          <div class="pad">
+            <button id="btn-crouch" class="small">Ngendap</button>
+            <button id="btn-jump" class="big">Lompat</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="mute" class="round mute" aria-label="Suara nyala/mati">🔊</button>
+
+      <div id="menu" class="overlay">
+        <div class="panel">
+          <h1>Kucing Pasar</h1>
+          <p class="tagline">Kamu kucing oren. Pasar lagi rame, ikannya banyak. Jangan sampai ketahuan ibu-ibu.</p>
+          <div class="levels" id="levels"></div>
+          <details class="how">
+            <summary>Cara main</summary>
+            <ul>
+              <li>Ambil ikan, terus kabur lewat <b>got</b> di ujung pasar.</li>
+              <li>Ibu-ibu lihat ke depan. Makin lama kelihatan, makin curiga (<b>?</b>). Penuh = dikejar (<b>!</b>).</li>
+              <li><b>Ngendap</b> bikin kamu lebih susah kelihatan. Ngendap di <b>kolong meja</b> = nggak kelihatan sama sekali.</li>
+              <li>Ibu-ibu nggak bisa lihat ke atas terpal. Kena sapu = nyawa berkurang dan ikan terakhir jatuh.</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+
+      <div id="pause-menu" class="overlay" hidden>
+        <div class="panel">
+          <h2>Istirahat dulu</h2>
+          <button id="resume" class="btn">Lanjut</button>
+          <button id="restart" class="btn ghost">Ulang level</button>
+          <button id="quit" class="btn ghost">Menu</button>
+        </div>
+      </div>
+
+      <div id="result" class="overlay" hidden>
+        <div class="panel">
+          <h2 id="result-title">Berhasil kabur!</h2>
+          <div class="stars" id="result-stars"></div>
+          <ul class="star-list" id="result-list"></ul>
+          <button id="next" class="btn">Level berikutnya</button>
+          <button id="again" class="btn ghost">Ulang</button>
+          <button id="to-menu" class="btn ghost">Menu</button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
