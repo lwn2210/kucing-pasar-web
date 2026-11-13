@@ -2,6 +2,7 @@ import './style.css'
 import { Sfx } from './audio'
 import { Controls } from './input'
 import { LEVELS } from './levels'
+import { parseStars } from './progress'
 import { Renderer, type Pose } from './render/renderer'
 import { DT, LIVES } from './sim/constants'
 import { createGame, step, type GameEvent, type GameState } from './sim/game'
@@ -22,7 +23,7 @@ const LINES = {
 
 function loadStars(): Record<string, number> {
   try {
-    return JSON.parse(localStorage.getItem(PROGRESS_KEY) ?? '{}') as Record<string, number>
+    return parseStars(localStorage.getItem(PROGRESS_KEY))
   } catch {
     return {}
   }
